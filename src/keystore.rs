@@ -2,14 +2,12 @@ use hex::{FromHex, ToHex};
 use serde::{de::Deserializer, ser::Serializer, Deserialize, Serialize};
 use uuid::Uuid;
 
-#[cfg(feature = "geth-compat")]
-use ethereum_types::H160 as Address;
+use ethereum_types::H176 as Address;
 
 #[derive(Debug, Deserialize, Serialize)]
 /// This struct represents the deserialized form of an encrypted JSON keystore based on the
 /// [Web3 Secret Storage Definition](https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition).
 pub struct EthKeystore {
-    #[cfg(feature = "geth-compat")]
     pub address: Address,
 
     pub crypto: CryptoJson,
@@ -87,9 +85,8 @@ where
 mod tests {
     use super::*;
 
-    #[cfg(feature = "geth-compat")]
     #[test]
-    fn deserialize_geth_compat_keystore() {
+    fn deserialize_gocore_compat_keystore() {
         let data = r#"
         {
             "address": "00000398232e2064f896018496b4b44b3d62751f",
@@ -119,7 +116,6 @@ mod tests {
         );
     }
 
-    #[cfg(not(feature = "geth-compat"))]
     #[test]
     fn test_deserialize_pbkdf2() {
         let data = r#"
@@ -178,7 +174,6 @@ mod tests {
         );
     }
 
-    #[cfg(not(feature = "geth-compat"))]
     #[test]
     fn test_deserialize_scrypt() {
         let data = r#"

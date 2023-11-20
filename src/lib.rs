@@ -6,13 +6,13 @@ use aes::{
     cipher::{self, InnerIvInit, KeyInit, StreamCipherCore},
     Aes128,
 };
+use corebc_core::types::Network;
 use digest::{Digest, Update};
 use hmac::Hmac;
 use pbkdf2::pbkdf2;
 use rand::{CryptoRng, Rng};
 use scrypt::{scrypt, Params as ScryptParams};
-use sha2::Sha256;
-use sha3::Keccak256;
+use tiny_keccak::{Sha3, Hasher}; 
 use uuid::Uuid;
 
 use std::{
@@ -25,14 +25,13 @@ mod error;
 mod keystore;
 mod utils;
 
-#[cfg(feature = "geth-compat")]
-use utils::geth_compat::address_from_pk;
+use utils::gocore_compat::address_from_pk;
 
 pub use error::KeystoreError;
 pub use keystore::{CipherparamsJson, CryptoJson, EthKeystore, KdfType, KdfparamsType};
 
 const DEFAULT_CIPHER: &str = "aes-128-ctr";
-const DEFAULT_KEY_SIZE: usize = 32usize;
+const DEFAULT_KEY_SIZE: usize = 57usize;
 const DEFAULT_IV_SIZE: usize = 16usize;
 const DEFAULT_KDF_PARAMS_DKLEN: u8 = 32u8;
 const DEFAULT_KDF_PARAMS_LOG_N: u8 = 13u8;
@@ -67,6 +66,7 @@ pub fn new<P, R, S>(
     rng: &mut R,
     password: S,
     name: Option<&str>,
+    network: &Network,
 ) -> Result<(Vec<u8>, String), KeystoreError>
 where
     P: AsRef<Path>,
@@ -77,7 +77,7 @@ where
     let mut pk = vec![0u8; DEFAULT_KEY_SIZE];
     rng.fill_bytes(pk.as_mut_slice());
 
-    let name = encrypt_key(dir, rng, &pk, password, name)?;
+    let name = encrypt_key(dir, rng, &pk, password, name, network)?;
     Ok((pk, name))
 }
 
@@ -117,7 +117,7 @@ where
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            pbkdf2::<Hmac<Sha3>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
@@ -138,7 +138,7 @@ where
     };
 
     // Derive the MAC from the derived key and ciphertext.
-    let derived_mac = Keccak256::new()
+    let derived_mac = Sha3::v256()
         .chain(&key[16..32])
         .chain(&keystore.crypto.ciphertext)
         .finalize();
@@ -187,6 +187,7 @@ pub fn encrypt_key<P, R, B, S>(
     pk: B,
     password: S,
     name: Option<&str>,
+    network: &Network,
 ) -> Result<String, KeystoreError>
 where
     P: AsRef<Path>,
@@ -217,7 +218,7 @@ where
     encryptor.apply_keystream(&mut ciphertext);
 
     // Calculate the MAC.
-    let mac = Keccak256::new()
+    let mac = Sha3::v256()
         .chain(&key[16..32])
         .chain(&ciphertext)
         .finalize();
@@ -248,8 +249,7 @@ where
             },
             mac: mac.to_vec(),
         },
-        #[cfg(feature = "geth-compat")]
-        address: address_from_pk(&pk)?,
+        address: address_from_pk(&pk, network)?,
     };
     let contents = serde_json::to_string(&keystore)?;
 

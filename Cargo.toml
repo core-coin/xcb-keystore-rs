@@ -18,18 +18,17 @@ digest = "0.10.0"
 hex = "0.4.2"
 hmac = "0.12.0"
 pbkdf2 = { version = "0.11", default-features = false }
-rand = "0.8.4"
+rand = "0.8.5"
 scrypt = { version = "0.10.0", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+bytes = "1.4"
 sha2 = "0.10.1"
 sha3 = "0.10.0"
 thiserror = { version = "1.0.22", default-features = false }
 uuid = { version = "1.0", features = ["serde", "v4"] }
+tiny-keccak = {version = "2.0.2", features = ["sha3"]} 
+corebc-core = { git = "https://github.com/core-coin/corebc-rs.git", default-features = false, branch = "development"}
 
-# feature = "geth-compat"
-ethereum-types = { version = "0.13.1", optional = true }
-k256 = { version = "0.11.0", optional = true }
-
-[features]
-geth-compat = ["ethereum-types", "k256", "k256/ecdsa"]
+ethereum-types = { git = "https://github.com/core-coin/core-common.git", version = "0.14.1", default-features = true, features = ["rlp"]}
+libgoldilocks = { git = "https://github.com/core-coin/ed448-rs.git" }
