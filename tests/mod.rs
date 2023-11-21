@@ -1,4 +1,4 @@
-use eth_keystore::{decrypt_key, encrypt_key, new};
+use xcb_keystore::{decrypt_key, encrypt_key, new};
 use hex::FromHex;
 use std::path::Path;
 

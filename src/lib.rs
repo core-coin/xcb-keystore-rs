@@ -46,7 +46,7 @@ const DEFAULT_KDF_PARAMS_P: u32 = 1u32;
 /// # Example
 ///
 /// ```no_run
-/// use eth_keystore::new;
+/// use xcb_keystore::new;
 /// use std::path::Path;
 /// use corebc_core::types::Network;
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
@@ -88,7 +88,7 @@ where
 /// # Example
 ///
 /// ```no_run
-/// use eth_keystore::decrypt_key;
+/// use xcb_keystore::decrypt_key;
 /// use std::path::Path;
 ///
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
@@ -164,7 +164,7 @@ where
 /// # Example
 ///
 /// ```no_run
-/// use eth_keystore::encrypt_key;
+/// use xcb_keystore::encrypt_key;
 /// use rand::RngCore;
 /// use std::path::Path;
 /// use corebc_core::types::Network;
