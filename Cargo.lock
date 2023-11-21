@@ -351,7 +351,7 @@ checksum = "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
 [[package]]
 name = "corebc"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "corebc-addressbook",
  "corebc-blockindex",
@@ -365,7 +365,7 @@ dependencies = [
 [[package]]
 name = "corebc-addressbook"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "corebc-core",
  "once_cell",
@@ -376,7 +376,7 @@ dependencies = [
 [[package]]
 name = "corebc-blockindex"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "corebc-core",
  "getrandom",
@@ -391,7 +391,7 @@ dependencies = [
 [[package]]
 name = "corebc-contract"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "corebc-contract-abigen",
  "corebc-contract-derive",
@@ -409,7 +409,7 @@ dependencies = [
 [[package]]
 name = "corebc-contract-abigen"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "Inflector",
  "corebc-blockindex",
@@ -435,7 +435,7 @@ dependencies = [
 [[package]]
 name = "corebc-contract-derive"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "Inflector",
  "corebc-contract-abigen",
@@ -450,18 +450,17 @@ dependencies = [
 [[package]]
 name = "corebc-core"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "arrayvec",
  "bytes",
  "cargo_metadata",
  "chrono",
- "elliptic-curve",
  "ethabi",
- "generic-array",
  "getrandom",
  "hex",
  "k256",
+ "libgoldilocks 0.1.0 (git+https://github.com/core-coin/ed448-rs)",
  "num_enum",
  "once_cell",
  "open-fastrlp",
@@ -480,7 +479,7 @@ dependencies = [
 [[package]]
 name = "corebc-middleware"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "async-trait",
  "auto_impl",
@@ -506,7 +505,7 @@ dependencies = [
 [[package]]
 name = "corebc-providers"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "async-trait",
  "auto_impl",
@@ -541,7 +540,7 @@ dependencies = [
 [[package]]
 name = "corebc-signers"
 version = "2.0.3"
-source = "git+https://github.com/core-coin/corebc-rs.git#92240d1135d05e43695517e8502421db8f9499bc"
+source = "git+https://github.com/core-coin/corebc-rs.git?branch=development#ec1322bd66a7918157d4133b475da7f272e6d616"
 dependencies = [
  "async-trait",
  "coins-bip32",
@@ -1271,6 +1270,16 @@ checksum = "89d92a4743f9a61002fae18374ed11e7973f530cb3a3255fb354818118b2203c"
 name = "libgoldilocks"
 version = "0.1.0"
 source = "git+https://github.com/core-coin/ed448-rs.git?branch=fix/public_errors#eb5d60546f0592ef9d32f711092e2b52461481f3"
+dependencies = [
+ "hex",
+ "rand",
+ "sha3",
+]
+
+[[package]]
+name = "libgoldilocks"
+version = "0.1.0"
+source = "git+https://github.com/core-coin/ed448-rs#26bf75c87cb5615e0d16898aed1e68ba3e979fd1"
 dependencies = [
  "hex",
  "rand",
@@ -2605,7 +2614,7 @@ dependencies = [
  "ethereum-types",
  "hex",
  "hmac",
- "libgoldilocks",
+ "libgoldilocks 0.1.0 (git+https://github.com/core-coin/ed448-rs.git?branch=fix/public_errors)",
  "pbkdf2 0.11.0",
  "rand",
  "scrypt",
