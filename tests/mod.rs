@@ -1,6 +1,6 @@
-use xcb_keystore::{decrypt_key, encrypt_key, new};
 use hex::FromHex;
 use std::path::Path;
+use xcb_keystore::{decrypt_key, encrypt_key, new};
 
 mod tests {
     use super::*;
@@ -14,7 +14,7 @@ mod tests {
             &mut rng,
             "thebestrandompassword",
             None,
-            &corebc_core::types::Network::Mainnet,
+            &corebc::core::types::Network::Mainnet,
         )
         .unwrap();
 
@@ -38,7 +38,7 @@ mod tests {
             &mut rng,
             "thebestrandompassword",
             Some(name),
-            &corebc_core::types::Network::Mainnet,
+            &corebc::core::types::Network::Mainnet,
         )
         .unwrap();
 
@@ -84,7 +84,7 @@ mod tests {
             &secret,
             "newpassword",
             None,
-            &corebc_core::types::Network::Mainnet,
+            &corebc::core::types::Network::Mainnet,
         )
         .unwrap();
 

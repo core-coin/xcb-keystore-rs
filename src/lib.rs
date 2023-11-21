@@ -6,7 +6,7 @@ use aes::{
     cipher::{self, InnerIvInit, KeyInit, StreamCipherCore},
     Aes128,
 };
-use corebc_core::types::Network;
+use corebc::core::types::Network;
 use digest::{Digest, Update};
 use hmac::Hmac;
 use pbkdf2::pbkdf2;
@@ -48,7 +48,7 @@ const DEFAULT_KDF_PARAMS_P: u32 = 1u32;
 /// ```no_run
 /// use xcb_keystore::new;
 /// use std::path::Path;
-/// use corebc_core::types::Network;
+/// use corebc::core::types::Network;
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
 /// let mut rng = rand::thread_rng();
@@ -167,7 +167,7 @@ where
 /// use xcb_keystore::encrypt_key;
 /// use rand::RngCore;
 /// use std::path::Path;
-/// use corebc_core::types::Network;
+/// use corebc::core::types::Network;
 ///
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");

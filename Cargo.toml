@@ -28,7 +28,7 @@ sha3 = "0.10.0"
 thiserror = { version = "1.0.22", default-features = false }
 uuid = { version = "1.0", features = ["serde", "v4"] }
 tiny-keccak = {version = "2.0.2", features = ["sha3"]} 
-corebc-core = { git = "https://github.com/core-coin/corebc-rs.git", default-features = false}
+corebc = { git = "https://github.com/core-coin/corebc-rs.git", default-features = false}
 
 ethereum-types = { git = "https://github.com/core-coin/core-common.git", version = "0.14.1", default-features = true, features = ["rlp"]}
 libgoldilocks = { git = "https://github.com/core-coin/ed448-rs.git", branch = "fix/public_errors" }

@@ -1,8 +1,8 @@
 pub mod gocore_compat {
     use crate::KeystoreError;
-    use corebc_core::{types::Network, utils::to_ican};
+    use corebc::core::{types::Network, utils::to_ican};
     use ethereum_types::{H160, H176 as Address};
-    use libgoldilocks::{SigningKey, VerifyingKey};
+    use libgoldilocks::SigningKey;
     use tiny_keccak::{Hasher, Sha3};
 
     /// Converts a K256 SigningKey to an Core Address
@@ -11,10 +11,10 @@ pub mod gocore_compat {
         S: AsRef<[u8]>,
     {
         let secret_key = SigningKey::from_bytes(pk.as_ref())?;
-        let public_key = VerifyingKey::from(*secret_key.verifying_key());
+        let public_key = secret_key.verifying_key();
         let public_key = public_key.as_bytes();
 
-        let hash = sha3(&public_key[..]);
+        let hash = sha3(public_key);
         let mut bytes = [0u8; 20];
         bytes.copy_from_slice(&hash[12..]);
         let addr = H160::from(bytes);
