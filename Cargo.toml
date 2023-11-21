@@ -1,14 +1,14 @@
 [package]
-name = "eth-keystore"
+name = "xcb-keystore"
 version = "0.5.0"
 authors = ["Rohit Narurkar <rohit.narurkar@protonmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
 description = "A minimalist library to interact with encrypted JSON keystores"
-documentation = "https://docs.rs/eth-keystore"
-repository = "https://github.com/roynalnaruto/eth-keystore-rs"
+documentation = "https://docs.rs/xcb-keystore"
+repository = "https://github.com/roynalnaruto/xcb-keystore-rs"
 readme = "README.md"
-keywords = ["ethereum", "web3", "wallet"]
+keywords = ["core-coin", "web3", "wallet"]
 exclude = ["tests/test-keys/*"]
 
 [dependencies]
@@ -31,4 +31,4 @@ tiny-keccak = {version = "2.0.2", features = ["sha3"]}
 corebc-core = { git = "https://github.com/core-coin/corebc-rs.git", default-features = false, branch = "development"}
 
 ethereum-types = { git = "https://github.com/core-coin/core-common.git", version = "0.14.1", default-features = true, features = ["rlp"]}
-libgoldilocks = { git = "https://github.com/core-coin/ed448-rs.git" }
+libgoldilocks = { git = "https://github.com/core-coin/ed448-rs.git", branch = "fix/public_errors" }

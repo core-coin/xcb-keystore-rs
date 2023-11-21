@@ -1,4 +1,4 @@
-use libgoldilocks::goldilocks;
+use libgoldilocks::errors;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -26,7 +26,7 @@ pub enum KeystoreError {
 
     /// Error propagated from goldilocks crate
     #[error(transparent)]
-    GoldilocksError(#[from] goldilocks::LibgoldilockErrors),
+    GoldilocksError(#[from] errors::LibgoldilockErrors),
 }
 
 impl From<scrypt::errors::InvalidParams> for KeystoreError {

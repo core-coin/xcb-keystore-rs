@@ -1,11 +1,11 @@
 pub mod gocore_compat {
-    use ethereum_types::{H176 as Address, H160};
-    use tiny_keccak::{Hasher, Sha3};
-    use libgoldilocks::{VerifyingKey, SigningKey};
-    use corebc_core::{utils::to_ican, types::Network};
     use crate::KeystoreError;
+    use corebc_core::{types::Network, utils::to_ican};
+    use ethereum_types::{H160, H176 as Address};
+    use libgoldilocks::{SigningKey, VerifyingKey};
+    use tiny_keccak::{Hasher, Sha3};
 
-    /// Converts a K256 SigningKey to an Ethereum Address
+    /// Converts a K256 SigningKey to an Core Address
     pub fn address_from_pk<S>(pk: S, network: &Network) -> Result<Address, KeystoreError>
     where
         S: AsRef<[u8]>,
@@ -22,13 +22,13 @@ pub mod gocore_compat {
     }
 
     /// Compute the Keccak-256 hash of input bytes.
-pub fn sha3<T: AsRef<[u8]>>(bytes: T) -> [u8; 32] {
-    let mut output = [0u8; 32];
+    pub fn sha3<T: AsRef<[u8]>>(bytes: T) -> [u8; 32] {
+        let mut output = [0u8; 32];
 
-    let mut hasher = Sha3::v256();
-    hasher.update(bytes.as_ref());
-    hasher.finalize(&mut output);
+        let mut hasher = Sha3::v256();
+        hasher.update(bytes.as_ref());
+        hasher.finalize(&mut output);
 
-    output
-}
+        output
+    }
 }

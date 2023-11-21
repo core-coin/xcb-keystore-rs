@@ -12,7 +12,7 @@ use hmac::Hmac;
 use pbkdf2::pbkdf2;
 use rand::{CryptoRng, Rng};
 use scrypt::{scrypt, Params as ScryptParams};
-use tiny_keccak::{Sha3, Hasher}; 
+use sha3::Sha3_256;
 use uuid::Uuid;
 
 use std::{
@@ -48,16 +48,16 @@ const DEFAULT_KDF_PARAMS_P: u32 = 1u32;
 /// ```no_run
 /// use eth_keystore::new;
 /// use std::path::Path;
-///
+/// use corebc_core::types::Network;
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
 /// let mut rng = rand::thread_rng();
 /// // here `None` signifies we don't specify a filename for the keystore.
 /// // the default filename is a generated Uuid for the keystore.
-/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", None)?;
+/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", None, &Network::Mainnet)?;
 ///
 /// // here `Some("my_key")` denotes a custom filename passed by the caller.
-/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", Some("my_key"))?;
+/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", Some("my_key"), &Network::Mainnet)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -117,7 +117,7 @@ where
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha3>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            pbkdf2::<Hmac<Sha3_256>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
@@ -138,7 +138,7 @@ where
     };
 
     // Derive the MAC from the derived key and ciphertext.
-    let derived_mac = Sha3::v256()
+    let derived_mac = Sha3_256::new()
         .chain(&key[16..32])
         .chain(&keystore.crypto.ciphertext)
         .finalize();
@@ -167,6 +167,7 @@ where
 /// use eth_keystore::encrypt_key;
 /// use rand::RngCore;
 /// use std::path::Path;
+/// use corebc_core::types::Network;
 ///
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
@@ -177,7 +178,7 @@ where
 /// rng.fill_bytes(private_key.as_mut_slice());
 ///
 /// // Since we specify a custom filename for the keystore, it will be stored in `$dir/my-key`
-/// let name = encrypt_key(&dir, &mut rng, &private_key, "password_to_keystore", Some("my-key"))?;
+/// let name = encrypt_key(&dir, &mut rng, &private_key, "password_to_keystore", Some("my-key"), &Network::Mainnet)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -218,7 +219,7 @@ where
     encryptor.apply_keystream(&mut ciphertext);
 
     // Calculate the MAC.
-    let mac = Sha3::v256()
+    let mac = Sha3_256::new()
         .chain(&key[16..32])
         .chain(&ciphertext)
         .finalize();
