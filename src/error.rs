@@ -1,3 +1,4 @@
+use libgoldilocks::errors;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -23,10 +24,9 @@ pub enum KeystoreError {
     #[error("aes {0:?}")]
     AesInvalidKeyNonceLength(aes::cipher::InvalidLength),
 
-    /// Error propagated from k256 crate
-    #[cfg(feature = "geth-compat")]
+    /// Error propagated from goldilocks crate
     #[error(transparent)]
-    K256Error(#[from] k256::ecdsa::Error),
+    GoldilocksError(#[from] errors::LibgoldilockErrors),
 }
 
 impl From<scrypt::errors::InvalidParams> for KeystoreError {

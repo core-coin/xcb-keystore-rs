@@ -6,13 +6,13 @@ use aes::{
     cipher::{self, InnerIvInit, KeyInit, StreamCipherCore},
     Aes128,
 };
+use corebc::core::types::Network;
 use digest::{Digest, Update};
 use hmac::Hmac;
 use pbkdf2::pbkdf2;
 use rand::{CryptoRng, Rng};
 use scrypt::{scrypt, Params as ScryptParams};
-use sha2::Sha256;
-use sha3::Keccak256;
+use sha3::Sha3_256;
 use uuid::Uuid;
 
 use std::{
@@ -25,14 +25,13 @@ mod error;
 mod keystore;
 mod utils;
 
-#[cfg(feature = "geth-compat")]
-use utils::geth_compat::address_from_pk;
+use utils::gocore_compat::address_from_pk;
 
 pub use error::KeystoreError;
 pub use keystore::{CipherparamsJson, CryptoJson, EthKeystore, KdfType, KdfparamsType};
 
 const DEFAULT_CIPHER: &str = "aes-128-ctr";
-const DEFAULT_KEY_SIZE: usize = 32usize;
+const DEFAULT_KEY_SIZE: usize = 57usize;
 const DEFAULT_IV_SIZE: usize = 16usize;
 const DEFAULT_KDF_PARAMS_DKLEN: u8 = 32u8;
 const DEFAULT_KDF_PARAMS_LOG_N: u8 = 13u8;
@@ -47,18 +46,18 @@ const DEFAULT_KDF_PARAMS_P: u32 = 1u32;
 /// # Example
 ///
 /// ```no_run
-/// use eth_keystore::new;
+/// use xcb_keystore::new;
 /// use std::path::Path;
-///
+/// use corebc::core::types::Network;
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
 /// let mut rng = rand::thread_rng();
 /// // here `None` signifies we don't specify a filename for the keystore.
 /// // the default filename is a generated Uuid for the keystore.
-/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", None)?;
+/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", None, &Network::Mainnet)?;
 ///
 /// // here `Some("my_key")` denotes a custom filename passed by the caller.
-/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", Some("my_key"))?;
+/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", Some("my_key"), &Network::Mainnet)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -67,6 +66,7 @@ pub fn new<P, R, S>(
     rng: &mut R,
     password: S,
     name: Option<&str>,
+    network: &Network,
 ) -> Result<(Vec<u8>, String), KeystoreError>
 where
     P: AsRef<Path>,
@@ -77,7 +77,7 @@ where
     let mut pk = vec![0u8; DEFAULT_KEY_SIZE];
     rng.fill_bytes(pk.as_mut_slice());
 
-    let name = encrypt_key(dir, rng, &pk, password, name)?;
+    let name = encrypt_key(dir, rng, &pk, password, name, network)?;
     Ok((pk, name))
 }
 
@@ -88,7 +88,7 @@ where
 /// # Example
 ///
 /// ```no_run
-/// use eth_keystore::decrypt_key;
+/// use xcb_keystore::decrypt_key;
 /// use std::path::Path;
 ///
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
@@ -117,7 +117,7 @@ where
             salt,
         } => {
             let mut key = vec![0u8; dklen as usize];
-            pbkdf2::<Hmac<Sha256>>(password.as_ref(), &salt, c, key.as_mut_slice());
+            pbkdf2::<Hmac<Sha3_256>>(password.as_ref(), &salt, c, key.as_mut_slice());
             key
         }
         KdfparamsType::Scrypt {
@@ -138,7 +138,7 @@ where
     };
 
     // Derive the MAC from the derived key and ciphertext.
-    let derived_mac = Keccak256::new()
+    let derived_mac = Sha3_256::new()
         .chain(&key[16..32])
         .chain(&keystore.crypto.ciphertext)
         .finalize();
@@ -164,9 +164,10 @@ where
 /// # Example
 ///
 /// ```no_run
-/// use eth_keystore::encrypt_key;
+/// use xcb_keystore::encrypt_key;
 /// use rand::RngCore;
 /// use std::path::Path;
+/// use corebc::core::types::Network;
 ///
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
@@ -177,7 +178,7 @@ where
 /// rng.fill_bytes(private_key.as_mut_slice());
 ///
 /// // Since we specify a custom filename for the keystore, it will be stored in `$dir/my-key`
-/// let name = encrypt_key(&dir, &mut rng, &private_key, "password_to_keystore", Some("my-key"))?;
+/// let name = encrypt_key(&dir, &mut rng, &private_key, "password_to_keystore", Some("my-key"), &Network::Mainnet)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -187,6 +188,7 @@ pub fn encrypt_key<P, R, B, S>(
     pk: B,
     password: S,
     name: Option<&str>,
+    network: &Network,
 ) -> Result<String, KeystoreError>
 where
     P: AsRef<Path>,
@@ -217,7 +219,7 @@ where
     encryptor.apply_keystream(&mut ciphertext);
 
     // Calculate the MAC.
-    let mac = Keccak256::new()
+    let mac = Sha3_256::new()
         .chain(&key[16..32])
         .chain(&ciphertext)
         .finalize();
@@ -248,8 +250,7 @@ where
             },
             mac: mac.to_vec(),
         },
-        #[cfg(feature = "geth-compat")]
-        address: address_from_pk(&pk)?,
+        address: address_from_pk(&pk, network)?,
     };
     let contents = serde_json::to_string(&keystore)?;
 
