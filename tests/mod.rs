@@ -14,7 +14,7 @@ mod tests {
             &mut rng,
             "thebestrandompassword",
             None,
-            &corebc::core::types::Network::Mainnet,
+            1,
         )
         .unwrap();
 
@@ -38,7 +38,7 @@ mod tests {
             &mut rng,
             "thebestrandompassword",
             Some(name),
-            &corebc::core::types::Network::Mainnet,
+            1,
         )
         .unwrap();
 
@@ -84,7 +84,7 @@ mod tests {
             &secret,
             "newpassword",
             None,
-            &corebc::core::types::Network::Mainnet,
+            1,
         )
         .unwrap();
 
