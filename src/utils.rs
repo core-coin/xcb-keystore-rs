@@ -7,7 +7,6 @@ pub mod gocore_compat {
     where
         S: AsRef<[u8]>,
     {
-        println!("{:#?}", pk.as_ref());
         Ok(IcanAddress::from_raw_public_key(pk.as_ref(), network))
     }
 }
