@@ -6,7 +6,6 @@ use aes::{
     cipher::{self, InnerIvInit, KeyInit, StreamCipherCore},
     Aes128,
 };
-use corebc::core::types::Network;
 use digest::{Digest, Update};
 use hmac::Hmac;
 use pbkdf2::pbkdf2;
@@ -48,16 +47,15 @@ const DEFAULT_KDF_PARAMS_P: u32 = 1u32;
 /// ```no_run
 /// use xcb_keystore::new;
 /// use std::path::Path;
-/// use corebc::core::types::Network;
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
 /// let mut rng = rand::thread_rng();
 /// // here `None` signifies we don't specify a filename for the keystore.
 /// // the default filename is a generated Uuid for the keystore.
-/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", None, &Network::Mainnet)?;
+/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", None, 1)?;
 ///
 /// // here `Some("my_key")` denotes a custom filename passed by the caller.
-/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", Some("my_key"), &Network::Mainnet)?;
+/// let (private_key, name) = new(&dir, &mut rng, "password_to_keystore", Some("my_key"), 1)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -66,7 +64,7 @@ pub fn new<P, R, S>(
     rng: &mut R,
     password: S,
     name: Option<&str>,
-    network: &Network,
+    network: u64,
 ) -> Result<(Vec<u8>, String), KeystoreError>
 where
     P: AsRef<Path>,
@@ -167,7 +165,6 @@ where
 /// use xcb_keystore::encrypt_key;
 /// use rand::RngCore;
 /// use std::path::Path;
-/// use corebc::core::types::Network;
 ///
 /// # async fn foobar() -> Result<(), Box<dyn std::error::Error>> {
 /// let dir = Path::new("./keys");
@@ -178,7 +175,7 @@ where
 /// rng.fill_bytes(private_key.as_mut_slice());
 ///
 /// // Since we specify a custom filename for the keystore, it will be stored in `$dir/my-key`
-/// let name = encrypt_key(&dir, &mut rng, &private_key, "password_to_keystore", Some("my-key"), &Network::Mainnet)?;
+/// let name = encrypt_key(&dir, &mut rng, &private_key, "password_to_keystore", Some("my-key"), 1)?;
 /// # Ok(())
 /// # }
 /// ```
@@ -188,7 +185,7 @@ pub fn encrypt_key<P, R, B, S>(
     pk: B,
     password: S,
     name: Option<&str>,
-    network: &Network,
+    network: u64,
 ) -> Result<String, KeystoreError>
 where
     P: AsRef<Path>,

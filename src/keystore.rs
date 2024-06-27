@@ -1,21 +1,20 @@
+use alloy_core::primitives::IcanAddress;
 use hex::{FromHex, ToHex};
 use serde::{de::Deserializer, ser::Serializer, Deserialize, Serialize};
 use uuid::Uuid;
 
-use ethereum_types::H176 as Address;
-
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 /// This struct represents the deserialized form of an encrypted JSON keystore based on the
 /// [Web3 Secret Storage Definition](https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition).
 pub struct EthKeystore {
-    pub address: Address,
+    pub address: IcanAddress,
 
     pub crypto: CryptoJson,
     pub id: Uuid,
     pub version: u8,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 /// Represents the "crypto" part of an encrypted JSON keystore.
 pub struct CryptoJson {
     pub cipher: String,
@@ -28,7 +27,7 @@ pub struct CryptoJson {
     pub mac: Vec<u8>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq)]
 /// Represents the "cipherparams" part of an encrypted JSON keystore.
 pub struct CipherparamsJson {
     #[serde(serialize_with = "buffer_to_hex", deserialize_with = "hex_to_buffer")]
@@ -83,6 +82,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use super::*;
 
     #[test]
@@ -111,8 +112,8 @@ mod tests {
           }"#;
         let keystore: EthKeystore = serde_json::from_str(data).unwrap();
         assert_eq!(
-            keystore.address.as_bytes().to_vec(),
-            hex::decode("cb27de521e43741cf785cbad450d5649187b9612018f").unwrap()
+            keystore.address.to_string(),
+            "cb27de521e43741cf785cbad450d5649187b9612018f"
         );
     }
 
@@ -233,5 +234,35 @@ mod tests {
             Vec::from_hex("d7450eab867cc3b4f7619a586878428cf2a73056fcae32cc605df8ce07e799f6")
                 .unwrap()
         );
+    }
+
+    #[test]
+    fn serialize() {
+        let keystore = EthKeystore {
+            address: IcanAddress::from_str("cb27de521e43741cf785cbad450d5649187b9612018f").unwrap(),
+            crypto: CryptoJson {
+                cipher: String::from("aes-128-ctr"),
+                cipherparams: CipherparamsJson {
+                    iv: Vec::from_hex("ce4b6edebbcb44c76ba42cb2c7a59dd3").unwrap(),
+                },
+                ciphertext: Vec::from_hex("13b3adc4203f236343e7c6a59c04ac56e6dee12258eba391697d2b5f1e9b87698f53ae12b5837bc906c42bce38f9b575ea82dfaef84b1d6795").unwrap(),
+                kdf: KdfType::Scrypt,
+                kdfparams: KdfparamsType::Scrypt {
+                    dklen: 32,
+                    n: 2,
+                    p: 1,
+                    r: 8,
+                    salt: Vec::from_hex("54eeca614269586df5dfbde87b39e4077b0353d23fe3fb0e72312973b8d4d3df").unwrap(),
+                },
+                mac: Vec::from_hex("d7450eab867cc3b4f7619a586878428cf2a73056fcae32cc605df8ce07e799f6").unwrap(),
+            },
+            id: Uuid::parse_str("84c5fc55-b541-42ed-aaa7-28f508cd85c0").unwrap(),
+            version: 3,
+        };
+        let ser = serde_json::to_string(&keystore);
+        assert!(ser.is_ok());
+
+        let de: Result<EthKeystore, _> = serde_json::from_str(&ser.unwrap());
+        assert_eq!(de.unwrap(), keystore);
     }
 }
