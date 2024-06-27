@@ -16,7 +16,7 @@ dependencies = [
 [[package]]
 name = "alloy-core"
 version = "0.7.0"
-source = "git+https://github.com/core-coin/base-rs.git?rev=848d02eaa282b8eb086de496564113657bea6a4b#848d02eaa282b8eb086de496564113657bea6a4b"
+source = "git+https://github.com/core-coin/base-rs.git#a2d0a7b45cd22d04683d55042506a6bb9df35ca1"
 dependencies = [
  "alloy-primitives",
 ]
@@ -24,7 +24,7 @@ dependencies = [
 [[package]]
 name = "alloy-primitives"
 version = "0.7.0"
-source = "git+https://github.com/core-coin/base-rs.git?rev=848d02eaa282b8eb086de496564113657bea6a4b#848d02eaa282b8eb086de496564113657bea6a4b"
+source = "git+https://github.com/core-coin/base-rs.git#a2d0a7b45cd22d04683d55042506a6bb9df35ca1"
 dependencies = [
  "bytes",
  "cfg-if",
