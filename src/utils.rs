@@ -1,6 +1,6 @@
 pub mod gocore_compat {
     use crate::KeystoreError;
-    use alloy_core::primitives::IcanAddress;
+    use base_core::primitives::IcanAddress;
 
     /// Converts a K256 SigningKey to an Core Address
     pub fn address_from_pk<S>(pk: S, network: u64) -> Result<IcanAddress, KeystoreError>
