@@ -14,17 +14,29 @@ dependencies = [
 ]
 
 [[package]]
-name = "alloy-core"
+name = "arrayvec"
+version = "0.7.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "96d30a06541fbafbc7f82ed10c06164cfbd2c401138f6addd8404629c4b16711"
+
+[[package]]
+name = "autocfg"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
+
+[[package]]
+name = "base-core"
 version = "0.7.0"
-source = "git+https://github.com/core-coin/base-rs.git#a2d0a7b45cd22d04683d55042506a6bb9df35ca1"
+source = "git+https://github.com/core-coin/base-rs.git#4cf1f949312fc2969bb9aa9cb5cb700ed88c22a0"
 dependencies = [
- "alloy-primitives",
+ "base-primitives",
 ]
 
 [[package]]
-name = "alloy-primitives"
+name = "base-primitives"
 version = "0.7.0"
-source = "git+https://github.com/core-coin/base-rs.git#a2d0a7b45cd22d04683d55042506a6bb9df35ca1"
+source = "git+https://github.com/core-coin/base-rs.git#4cf1f949312fc2969bb9aa9cb5cb700ed88c22a0"
 dependencies = [
  "bytes",
  "cfg-if",
@@ -37,18 +49,6 @@ dependencies = [
  "serde",
  "tiny-keccak",
 ]
-
-[[package]]
-name = "arrayvec"
-version = "0.7.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96d30a06541fbafbc7f82ed10c06164cfbd2c401138f6addd8404629c4b16711"
-
-[[package]]
-name = "autocfg"
-version = "1.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
 
 [[package]]
 name = "base16ct"
@@ -848,7 +848,7 @@ name = "xcb-keystore"
 version = "0.5.0"
 dependencies = [
  "aes",
- "alloy-core",
+ "base-core",
  "bytes",
  "ctr",
  "digest",

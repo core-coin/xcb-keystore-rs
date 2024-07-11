@@ -1,4 +1,4 @@
-use alloy_core::primitives::IcanAddress;
+use base_core::primitives::IcanAddress;
 use hex::{FromHex, ToHex};
 use serde::{de::Deserializer, ser::Serializer, Deserialize, Serialize};
 use uuid::Uuid;
