@@ -845,7 +845,7 @@ dependencies = [
 
 [[package]]
 name = "xcb-keystore"
-version = "0.5.0"
+version = "1.0.0"
 dependencies = [
  "aes",
  "base-core",
